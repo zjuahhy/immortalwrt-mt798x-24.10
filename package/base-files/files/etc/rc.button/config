@@ -1,0 +1,22 @@
+#!/bin/sh
+
+. /lib/functions.sh
+
+func=`uci get openfi.switch.func`
+
+case "$ACTION" in
+pressed)
+	op_switch.sh off
+	return 0
+;;
+timeout)
+	. /etc/diag.sh
+	set_state failsafe
+;;
+released)
+	op_switch.sh on
+	return 0
+;;
+esac
+
+return 0
