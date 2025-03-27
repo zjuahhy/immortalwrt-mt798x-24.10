@@ -638,3 +638,20 @@ define Device/huasifei_wh3000-emmc
   IMAGE/sysupgrade.bin := sysupgrade-tar | append-metadata
 endef
 TARGET_DEVICES += huasifei_wh3000-emmc
+
+define Device/openfi_6c
+  DEVICE_VENDOR := OpenFi
+  DEVICE_MODEL := 6C (with 256MB+1GB+M.2 for 5G+U3)
+  DEVICE_DTS := mt7981-openfi-6c
+  DEVICE_DTS_DIR := $(DTS_DIR)/mediatek
+  SUPPORTED_DEVICES := openfi,6c
+  UBINIZE_OPTS := -E 5
+  BLOCKSIZE := 128k
+  PAGESIZE := 2048
+  IMAGE_SIZE := 239104k
+  KERNEL_IN_UBI := 1
+  IMAGES += factory.bin
+  IMAGE/sysupgrade.bin := sysupgrade-tar | append-metadata
+  DEVICE_PACKAGES := $(MT7981_USB_PKGS) kmod-hwmon-pwmfan kmod-usb-net-rndis kmod-usb-serial-option
+endef
+TARGET_DEVICES += openfi_6c
