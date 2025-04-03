@@ -389,6 +389,18 @@ class ModemInfo {
                 let node = document.createElement('p');
                 node.innerHTML = full_name + entry.value;
                 this.warning_message(node);
+                if (entry.key == "sim_status") {
+                    let node = document.createElement('p');
+                    node.innerHTML = full_name + entry.value+'';
+                    this.warning_message(node);
+                    let link = document.createElement('a');
+                    link.href = '<%=luci.dispatcher.build_url("admin", "modem", "qmodem", "sim_switch")%>';
+                    link.target = '_blank'; 
+                    link.innerHTML =  _("Please check if you need to switch the slot");
+
+                    node.innerHTML = ''; 
+                    node.appendChild(link); 
+                }
             }
         }
         else{

@@ -1,5 +1,16 @@
 { "modem_support": {
         "usb": {
+            "mt5710_cn": {
+                "manufacturer_id": "3466",
+                "manufacturer": "tdtech",
+                "platform": "hisilicon",
+                "data_interface": "usb",
+                "define_connect": "1",
+                "modes": [
+                    "ncm",
+                    "ecm"
+                ]
+            },
             "em05": {
                 "manufacturer_id": "2c7c",
                 "manufacturer": "quectel",
@@ -295,6 +306,17 @@
                     "rndis"
                 ]
             },
+            "fg132-cn": {
+                "manufacturer_id": "0114",
+                "manufacturer": "fibocom",
+                "platform": "qualcomm_fibocom",
+                "data_interface": "usb",
+                "define_connect": "3",
+                "modes": [
+                    "rndis",
+                    "ecm"
+                ]
+            },
             "fm150-ae": {
                 "manufacturer_id": "2cb7",
                 "manufacturer": "fibocom",
@@ -338,17 +360,6 @@
                     "mbim",
                     "rndis",
                     "ncm"
-                ]
-            },
-            "fg132-cn": {
-                "manufacturer_id": "0114",
-                "manufacturer": "fibocom",
-                "platform": "qualcomm",
-                "data_interface": "usb",
-                "define_connect": "3",
-                "modes": [
-                    "rndis",
-                    "ecm"
                 ]
             },
             "nl668": {
@@ -709,7 +720,7 @@
                         "010F",
                         "0110",
                         "0111",
-                        "0114"
+                        "0112"
                     ]
                 },
                 "mediatek": {

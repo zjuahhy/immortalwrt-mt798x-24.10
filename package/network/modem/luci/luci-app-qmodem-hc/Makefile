@@ -2,7 +2,6 @@
 # This is free software, licensed under the GNU General Public License v3.
 
 include $(TOPDIR)/rules.mk
-include $(INCLUDE_DIR)/package.mk
 
 PKG_NAME:=luci-app-qmodem-hc
 LUCI_TITLE:=hc-g80 sim switch
@@ -12,6 +11,7 @@ PKG_LICENSE:=GPLv3
 PKG_LINCESE_FILES:=LICENSE
 PKG_MAINTAINER:=Tom <fjrcn@outlook.com>
 LUCI_DEPENDS:=+luci-app-qmodem
+		
 
 define Package/luci-app-qmodem-hc/conffiles
 /etc/config/qmodem_hc_sim

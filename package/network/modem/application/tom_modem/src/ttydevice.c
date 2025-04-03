@@ -1,4 +1,6 @@
 #include "ttydevice.h"
+#include <sys/file.h> 
+
 static int tty_set_device(PROFILE_T *profile, FDS_T *fds)
 {
     int baud_rate, data_bits;
@@ -86,14 +88,23 @@ int tty_open_device(PROFILE_T *profile,FDS_T *fds)
         return COMM_ERROR;
     }
 
+    if (flock(fds->tty_fd, LOCK_EX) < 0)
+    {
+        err_msg("Error locking tty device: %s is already in use", profile->tty_dev);
+        close(fds->tty_fd);
+        return COMM_ERROR;
+    }
+
     if (tty_set_device(profile,fds) != 0)
     {
         err_msg("Error setting tty device");
         return COMM_ERROR;
     }
     tcflush(fds->tty_fd, TCIOFLUSH);
-    if (fds->tty_fd >= 0)
+    if (fds->tty_fd >= 0) {
+        flock(fds->tty_fd, LOCK_UN);
         close(fds->tty_fd);
+    }
     else
         return COMM_ERROR;
     fds->tty_fd = open(profile->tty_dev, O_RDWR | O_NOCTTY | O_NONBLOCK);
@@ -102,6 +113,13 @@ int tty_open_device(PROFILE_T *profile,FDS_T *fds)
     if (fds->fdi == NULL || fds->fdo == NULL)
     {
         err_msg("Error opening file descriptor");
+        return COMM_ERROR;
+    }
+
+    if (flock(fds->tty_fd, LOCK_EX) < 0)
+    {
+        err_msg("Error locking tty device: %s is already in use", profile->tty_dev);
+        close(fds->tty_fd);
         return COMM_ERROR;
     }
 

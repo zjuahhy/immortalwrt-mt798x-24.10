@@ -37,6 +37,14 @@ network_info()
     /usr/share/qmodem/modem_ctrl.sh network_info $1
 }
 
+set_sim_slot()
+{
+    state=$(uci get qmodem.$1.state)
+    if [ "$state" = "disabled" ]; then
+        return
+    fi
+    /usr/share/qmodem/modem_ctrl.sh set_sim_slot $1
+}
 
 cell_info()
 {

@@ -188,9 +188,8 @@ update_config()
     esac
     modem_net=$(find $modem_path -name net |tail -1)
     modem_netcard=$(ls $modem_net)
-    interface_name=$modem_config
-    [ -n "$alias" ] && interface_name=$alias
-    interface6_name=${interface_name}v6
+    interface_name="wlte"
+    interface6_name="wltev6"
 }
 
 check_dial_prepare()
@@ -259,6 +258,9 @@ check_ip()
                 ;;
             "fibocom")
                 case $platform in
+                    "qualcomm_fibocom")
+                        check_ip_command="AT+CGPADDR=1"
+                        ;;
                     "qualcomm")
                         check_ip_command="AT+CGPADDR=1"
                         ;;
@@ -275,6 +277,13 @@ check_ip()
                         ;;
                 esac
                 ;;
+            "tdtech")
+                case $platform in
+                    "hisilicon")
+                        check_ip_command="AT+CGPADDR=1"
+                        ;;
+                esac
+            ;;
         esac
         ipaddr=$(at "$at_port" "$check_ip_command" |grep +CGPADDR:)
         if [ -n "$ipaddr" ];then
@@ -376,8 +385,8 @@ set_if()
             env6="1"
             ;;
     esac
-    interface=$(uci -q get network.$interface_name)
-    interfacev6=$(uci -q get network.$interface6_name)
+    interface="wlte"
+    interfacev6="wltev6"
     if [ "$env4" -eq 1 ];then
         if [ -z "$inetrface" ];then
             uci set network.${interface_name}=interface
@@ -746,6 +755,10 @@ at_dial()
             ;;
         "fibocom")
             case $platform in
+                "qualcomm_fibocom")
+                    at_command="AT+QNETDEVCTL=1,3,1"
+                    cgdcont_command="AT+CGDCONT=1,\"$pdp_type\",\"$apn\""
+                    ;;
                 "qualcomm")
                     at_command="AT+GTRNDIS=1,1"
                     cgdcont_command="AT+CGDCONT=1,\"$pdp_type\",\"$apn\""
@@ -768,7 +781,14 @@ at_dial()
                     ;;
             esac
             ;;
-            
+        "tdtech")
+            case $platform in
+                "hisilicon")
+                    at_command="AT^NDISDUP=1,1"
+                    cgdcont_command="AT+CGDCONT=1,\"$pdp_type\",\"$apn\""
+                    ;;
+            esac
+            ;;
     esac
     m_debug "dialing vendor:$manufacturer;platform:$platform; $cgdcont_command ; $at_command"
     at "${at_port}" "${cgdcont_command}"

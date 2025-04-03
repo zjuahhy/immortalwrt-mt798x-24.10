@@ -1,5 +1,6 @@
 
 #include "main.h"
+#include <sys/file.h>
 
 FDS_T s_fds;
 PROFILE_T s_profile;   // global profile     
@@ -164,8 +165,10 @@ static void clean_up()
     }
     dbg_msg("Clean up success");
     tcflush(s_fds.tty_fd, TCIOFLUSH);
-    if (s_fds.tty_fd >= 0)
+    if (s_fds.tty_fd >= 0) {
+        flock(s_fds.tty_fd, LOCK_UN);
         close(s_fds.tty_fd);
+    }
 }
 
 int main(int argc, char *argv[])

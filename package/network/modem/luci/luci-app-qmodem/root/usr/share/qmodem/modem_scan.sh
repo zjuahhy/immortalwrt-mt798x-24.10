@@ -262,8 +262,8 @@ match_config()
 	#FM350-GL-00 5G Module
 	[[ "$name" = *"fm350-gl"* ]] && name="fm350-gl"
 
-    #FG132-GL-00 5G Module
-    [[ "$name" = *"fg132"* ]] && name="fg132-cn"
+	#FG132-GL-00 5G Module
+	[[ "$name" = *"fg132"* ]] && name="fg132-cn"
 
 	#RM500U-CNV
 	[[ "$name" = *"rm500u-cn"* ]] && name="rm500u-cn"
@@ -292,11 +292,13 @@ get_modem_model()
     name_1=$(echo -e "$cgmm" |grep "+CGMM: " | awk -F': ' '{print $2}')
     name_2=$(echo -e "$cgmm_1" |grep "+CGMM: " | awk -F'"' '{print $2} '| cut -d ' ' -f 1)
     name_3=$(echo -e "$cgmm" | sed -n '2p')
+    name_4=$(at $at_port AT+CGMM | grep -A 1 CGMM|sed -n 2p)
     modem_name=""
 
     [ -n "$name_1" ] && match_config "$name_1"
     [ -n "$name_2" ] && [ -z "$modem_name" ] && match_config "$name_2"
     [ -n "$name_3" ] && [ -z "$modem_name" ] && match_config "$name_3"
+    [ -n "$name_4" ] && [ -z "$modem_name" ] && match_config "$name_4"
     [ -z "$modem_name" ] && return 1
     return 0
 }
@@ -413,8 +415,8 @@ remove()
     uci commit qmodem
     uci batch <<EOF
 del qmodem.${section_name}
-del network.${section_name}
-del network.${section_name}v6
+del network.wlte
+del network.wltev6
 del dhcp.${section_name}
 commit network
 commit dhcp

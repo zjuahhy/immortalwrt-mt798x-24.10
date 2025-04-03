@@ -8,6 +8,12 @@ msgstr "模组信息"
 msgid "Dial Overview"
 msgstr "拨号概览"
 
+msgid "Dual SIM Management"
+msgstr "双SIM管理"
+
+msgid "Active SIM Slot"
+msgstr "正在使用的SIM卡槽"
+
 msgid "Advance Modem Settings"
 msgstr "高级模组设置"
 
@@ -51,6 +57,8 @@ msgstr "不修改resolv.conf"
 msgid "quectel-CM will append the DNS server to the resolv.conf file by default.if you do not want to modify the resolv.conf file, please check this option."
 msgstr "quectel-CM默认会将DNS服务器追加到resolv.conf文件中，如果不想修改resolv.conf文件，请勾选此选项"
 
+msgid "Switching SIM card will reboot the modem"
+msgstr "切换SIM卡会重启模组"
 
 msgid "RA Master"
 msgstr "作为RA上游"
@@ -467,6 +475,9 @@ msgstr "接收电平"
 # root/usr/share/qmodem/generic.sh
 msgid "SIM Error,Error code:" 
 msgstr "SIM 错误，错误代码："
+
+msgid "Please check if you need to switch the slot"
+msgstr "请检查是否需要切换卡槽" 
 
 msgid "warning"
 msgstr "警告"

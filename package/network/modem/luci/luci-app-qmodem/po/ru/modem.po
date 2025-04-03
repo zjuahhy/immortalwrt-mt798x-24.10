@@ -8,8 +8,14 @@ msgstr "Информация о QModem"
 msgid "Dial Overview"
 msgstr "Обзор набора"
 
+msgid "Dual SIM Management"
+msgstr "Управление двумя SIM-картами"
+
 msgid "Advance Modem Settings"
 msgstr "Расширенные настройки модема"
+
+msgid "Active SIM Slot"
+msgstr "Активный слот SIM-карты"
 
 msgid "QModem Setting"
 msgstr "Настройки QModem"
@@ -41,6 +47,9 @@ msgstr "RA мастер"
 
 msgid "Caution: Enabling this option will make it the IPV6 RA Master, and only one interface can be configured as such."
 msgstr "Внимание: Включение этой опции сделает его IPV6 RA мастером, и только один интерфейс может быть настроен как таковой."
+
+msgid "Switching SIM card will reboot the modem"
+msgstr "Переключение SIM-карты перезагрузит модем, пожалуйста"
 
 msgid "Extend Prefix"
 msgstr "Расширить префикс"
@@ -444,6 +453,12 @@ msgstr "RxLev"
 # root/usr/share/qmodem/generic.sh
 msgid "SIM Error,Error code:"
 msgstr "Ошибка SIM, код ошибки:"
+
+msgid "SIM Error,Error code:"
+msgstr "Ошибка SIM, код ошибки:"
+
+msgid "Please check if you need to switch the slot"
+msgstr "Пожалуйста, проверьте, нужно ли переключить слот" 
 
 msgid "warning"
 msgstr "предупреждение"

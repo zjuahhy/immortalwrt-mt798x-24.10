@@ -2,7 +2,6 @@
 # This is free software, licensed under the GNU General Public License v3.
 
 include $(TOPDIR)/rules.mk
-include $(INCLUDE_DIR)/package.mk
 
 PKG_NAME:=luci-app-qmodem-ttl
 LUCI_TITLE:=Luci qwrt modem ttl support

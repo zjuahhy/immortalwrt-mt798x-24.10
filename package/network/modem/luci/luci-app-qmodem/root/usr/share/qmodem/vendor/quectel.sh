@@ -19,6 +19,27 @@ set_imei(){
     json_close_object
     get_imei
 }
+get_current_sim_slot(){
+    at_command="AT+QUIMSLOT?"
+    for i in `seq 1 3`
+    do
+	    sim_slot=$(at $at_port $at_command | grep "+QUIMSLOT:" | awk -F' ' '{print $2}' | sed 's/\r//g')
+        if [ "$sim_slot" == "1" -o "$sim_slot" == "2" ]; then
+            break
+        fi
+    done
+    echo "$sim_slot"
+}
+
+set_sim_slot()
+{
+    slot="$1"
+    at_command="AT+QUIMSLOT=$slot"
+    res=$(at $at_port $at_command)
+    json_select "result"
+    json_add_string "set_sim_slot" "$res"
+    json_close_object
+}
 
 #获取拨号模式
 # $1:AT串口

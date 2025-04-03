@@ -16,8 +16,12 @@ function index()
 	entry({"admin", "modem"}, firstchild(), _("Modem"), 25).dependent=false
 	entry({"admin", "modem", "qmodem"}, alias("admin", "modem", "qmodem", "modem_info"), luci.i18n.translate("QModem"), 100).dependent = true
 	--模块信息
-	entry({"admin", "modem", "qmodem", "modem_info"}, template("qmodem/modem_info"), luci.i18n.translate("QModem Information"),2).leaf = true
+	entry({"admin", "modem", "qmodem", "modem_info"}, template("qmodem/modem_info"), luci.i18n.translate("QModem Information"),1).leaf = true
+	entry({"admin", "modem", "qmodem", "sim_switch"},template("qmodem/sim_switch"),luci.i18n.translate("Dual SIM Management"),2).leaf = true
 	entry({"admin", "modem", "qmodem", "get_modem_cfg"}, call("getModemCFG"), nil).leaf = true
+	entry({"admin", "modem", "qmodem", "get_sim_slot"}, call("get_sim_slot"), nil).leaf = true
+	entry({"admin", "modem", "qmodem", "set_sim_slot"}, call("set_sim_slot"), nil).leaf = true
+
 	entry({"admin", "modem", "qmodem", "modem_ctrl"}, call("modemCtrl")).leaf = true
 	--拨号配置
 	entry({"admin", "modem", "qmodem", "dial_overview"},cbi("qmodem/dial_overview"),luci.i18n.translate("Dial Overview"),3).leaf = true
@@ -218,3 +222,44 @@ function sendATCommand()
 	luci.http.prepare_content("application/json")
 	luci.http.write_json(response)
 end
+
+function get_modem_index_name()
+
+	local cfgs
+	uci:foreach("qmodem", "modem-device", function (modem_device)
+		modem_state = modem_device["state"]
+		if modem_state == "disabled" then
+			return
+		end
+		--获取模组的备注
+		local network=modem_device["modem"]
+		local alias=modem_device["alias"]
+		local config_name=modem_device[".name"]
+		cfgs = config_name
+	end)
+
+	return cfgs
+end
+
+
+function get_sim_slot()
+	local modem_setection=get_modem_index_name()
+	local result = shell(modem_ctrl.."get_current_sim_slot".." "..modem_setection)
+	luci.http.prepare_content("application/json")
+	luci.http.write_json(result)
+end
+
+
+function set_sim_slot()
+	local slot = http.formvalue("sim_slot")
+	local modem_setection=get_modem_index_name()
+	if slot == nil or (slot ~= "1" and slot ~= "2") then
+		return
+	end
+	local result = shell(modem_ctrl.."set_sim_slot".." "..modem_setection.." "..slot)
+	luci.http.prepare_content("application/json")
+	luci.http.write_json(result)
+	
+	shell(modem_ctrl.."do_reboot "..modem_setection.." " .. "'{\"method\":\"soft\"}'")
+end
+

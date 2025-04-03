@@ -2,7 +2,6 @@
 # This is free software, licensed under the GNU General Public License v3.
 
 include $(TOPDIR)/rules.mk
-include $(INCLUDE_DIR)/package.mk
 
 PKG_NAME:=luci-app-qmodem-mwan
 LUCI_TITLE:=Luci qwrt modem mwan support
@@ -12,6 +11,7 @@ PKG_LICENSE:=GPLv3
 PKG_LINCESE_FILES:=LICENSE
 PKG_MAINTAINER:=Tom <fjrcn@outlook.com>
 LUCI_DEPENDS:=+luci-app-qmodem +luci-app-mwan3
+		
 
 define Package/luci-app-qmodem-mwan/conffiles
 /etc/config/modem_mwan

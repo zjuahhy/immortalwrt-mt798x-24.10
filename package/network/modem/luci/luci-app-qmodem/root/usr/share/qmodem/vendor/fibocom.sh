@@ -28,9 +28,14 @@ get_mode()
                 "29") mode="mbim" ;; #-
                 "30") mode="mbim" ;;
                 "24") mode="rndis" ;;
-                "18") mode="ncm" ;;
-                "36") mode="rmnet" ;;
+                *) mode="$mode_num" ;;
+            esac
+        ;;
+        "qualcomm_fibocom")
+            case "$mode_num" in
+                "36") mode="rmnet" ;; #-
                 "40") mode="rndis" ;;
+                "48") mode="ecm" ;;
                 *) mode="$mode_num" ;;
             esac
         ;;
@@ -71,11 +76,36 @@ get_mode()
     json_close_objectget_imei
 }
 
+get_current_sim_slot()
+{
+    at_command="AT+GTDUALSIM?"
+	sim_slot=$(at ${at_port} ${at_command} | grep "+GTDUALSIM" | awk -F'"' '{print $2}' | sed 's/SUB//g')
+
+    echo "$sim_slot"
+}
+
+set_sim_slot()
+{
+    slot="$1"
+    at_command="AT+GTDUALSIM=$slot"
+    res=$(at $at_port $at_command)
+    json_select "result"
+    json_add_string "set_sim_slot" "$res"
+    json_close_object
+}
+
 #设置拨号模式
 set_mode()
 {
     local mode_config=$1
     case "$platform" in
+        "qualcomm_fibocom")
+            case "$mode_config" in
+                "rmnet") mode_num="36" ;;
+                "rndis") mode_num="40" ;;
+                "ecm") mode_num="38" ;;
+                *) mode_num="40" ;;
+            esac
         "qualcomm")
             case "$mode_config" in
                 "qmi") mode_num="32" ;;
@@ -288,6 +318,9 @@ set_network_prefer_lte()
 get_network_prefer()
 {
     case $platform in
+        "qualcomm_fibocom")
+            get_network_prefer_nr
+            ;;
         "qualcomm")
             get_network_prefer_nr
             ;;
@@ -309,6 +342,9 @@ get_network_prefer()
 set_network_prefer()
 {
     case $platform in
+        "qualcomm_fibocom")
+            set_network_prefer_nr $1
+            ;;
         "qualcomm")
             set_network_prefer_nr $1
             ;;
@@ -524,15 +560,15 @@ network_info()
     m_debug "Fibocom network info"
 
     #Network Type（网络类型）
-    at_command="AT+PSRAT?"
-    network_type=$(at ${at_port} ${at_command} | grep "+PSRAT:" | sed 's/+PSRAT: //g' | sed 's/\r//g')
+    # at_command="AT+PSRAT?"
+    # network_type=$(at ${at_port} ${at_command} | grep "+PSRAT:" | sed 's/+PSRAT: //g' | sed 's/\r//g')
 
-    [ -z "$network_type" ] && {
-        at_command='AT+COPS?'
-        local rat_num=$(at ${at_port} ${at_command} | grep "+COPS:" | awk -F',' '{print $4}' | sed 's/\r//g')
-        network_type=$(get_rat ${rat_num})
-    }
-
+    # [ -z "$network_type" ] && {
+    #     at_command='AT+COPS?'
+    #     local rat_num=$(at ${at_port} ${at_command} | grep "+COPS:" | awk -F',' '{print $4}' | sed 's/\r//g')
+    #     network_type=$(get_rat ${rat_num})
+    # }
+    network_type="5G"
     #设置网络类型为5G时，信号强度指示用RSRP代替
     # at_command="AT+GTCSQNREN=1"
     # at $at_port $at_command
@@ -576,6 +612,7 @@ network_info()
 get_lockband(){
     json_add_object "lockband"
     case $platform in
+        "qualcomm_fibocom"|\
         "qualcomm")
             get_lockband_nr
             ;;
@@ -790,6 +827,7 @@ set_lockband()
     band_class=$(echo $config | jq -r '.band_class')
     lock_band=$(echo $config | jq -r '.lock_band')
     case $platform in
+        "qualcomm_fibocom"|\
         "qualcomm")
             set_lockband_nr
             ;;

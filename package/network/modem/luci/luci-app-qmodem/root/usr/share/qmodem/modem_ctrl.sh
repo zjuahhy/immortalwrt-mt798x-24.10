@@ -23,6 +23,9 @@ case $vendor in
     "sierra")
         . /usr/share/qmodem/vendor/sierra.sh
         ;;
+    "tdtech")
+        . /usr/share/qmodem/vendor/tdtech.sh
+        ;;
     *)
         . /usr/share/qmodem/generic.sh
         ;;
@@ -132,6 +135,9 @@ case $method in
         ;;
     "set_imei")
         set_imei $3
+        ;;
+    "set_sim_slot")
+        set_sim_slot $3
         ;;
     "get_mode")
         get_mode
@@ -264,6 +270,12 @@ case $method in
         vendor_get_disabled_features
         get_modem_disabled_features
         get_global_disabled_features
+        json_close_array
+        ;;
+    "get_current_sim_slot")
+        json_select result
+        slot=$(get_current_sim_slot)
+        json_add_string sim_slot $slot
         json_close_array
         ;;
 esac

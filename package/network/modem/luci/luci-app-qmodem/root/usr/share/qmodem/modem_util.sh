@@ -78,6 +78,23 @@ update_sim_slot()
 at_get_slot()
 {
 	case $vendor in
+		"tdtech")
+			at_res=$(at $at_port AT^SIMSWITCH?|grep -i SIMSWITCH:|cut -d ':' -f 2|awk {'printf $1'})
+			case "$at_res" in
+				"1")
+					sim_slot="0"
+					;;
+				"2")
+					sim_slot="1"
+					;;
+				*)
+					sim_slot="1"
+					;;
+			*)
+				sim_slot="1"
+				;;
+			esac
+			;;
 		"quectel")
 			at_res=$(at $at_port AT+QSIMDET? |grep +QSIMDET: |awk -F: '{print $2}')
 			case "$at_res" in
