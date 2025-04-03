@@ -647,6 +647,9 @@ hang()
             ;;
     esac
     flush_if
+
+    #enable hnat
+    echo 1 > /sys/kernel/debug/hnat/hook_toggle
 }
 
 mbim_dial(){
@@ -976,6 +979,9 @@ at_dial_monitor()
                 ipv6_cache=$ipv6
                 ipv4_cache=$ipv4
             fi
+
+            #disable hnat
+            echo 0 > /sys/kernel/debug/hnat/hook_toggle
         fi
         check_logfile_line
     done
