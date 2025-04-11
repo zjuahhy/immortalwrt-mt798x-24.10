@@ -6,12 +6,12 @@ config interface 'loopback'
 	option netmask '255.0.0.0'
 
 config globals 'globals'
-	option ula_prefix 'fd10:f9d:baff::/48'
+	option ula_prefix 'fd98:74ef:24bd::/48'
 
 config device
 	option name 'br-lan'
 	option type 'bridge'
-	list ports 'eth0'
+	option ports 'eth1'
 
 config interface 'lan'
 	option device 'br-lan'
@@ -21,10 +21,10 @@ config interface 'lan'
 	option ip6assign '60'
 
 config interface 'wan'
-	option device 'eth1'
+	option device 'eth0'
 	option proto 'dhcp'
 
 config interface 'wan6'
-	option device 'eth1'
+	option device 'eth0'
 	option proto 'dhcpv6'
 

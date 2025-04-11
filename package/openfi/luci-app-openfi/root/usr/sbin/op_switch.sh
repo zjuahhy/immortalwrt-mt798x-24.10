@@ -28,13 +28,13 @@ lan_to_wan()
 {
 	port=`uci get network.@device[0].ports`
 
-	if [ "$port" == "eth1" ]; then
+	if [ "$port" == "eth0" ]; then
 		return 0
 	fi
 
-	uci set network.@device[0].ports="eth1"
-	uci set network.wan.device="eth0"
-	uci set network.wan6.device="eth0"
+	uci set network.@device[0].ports="eth0"
+	uci set network.wan.device="eth1"
+	uci set network.wan6.device="eth1"
 	uci commit
 	/etc/init.d/network restart
 }
@@ -43,13 +43,13 @@ wan_to_lan()
 {
 	port=`uci get network.@device[0].ports`
 
-	if [ "$port" == "eth0" ]; then
+	if [ "$port" == "eth1" ]; then
 		return 0
 	fi
 
-	uci set network.@device[0].ports="eth0"
-	uci set network.wan.device="eth1"
-	uci set network.wan6.device="eth1"
+	uci set network.@device[0].ports="eth1"
+	uci set network.wan.device="eth0"
+	uci set network.wan6.device="eth0"
 	uci commit
 	/etc/init.d/network restart
 }
