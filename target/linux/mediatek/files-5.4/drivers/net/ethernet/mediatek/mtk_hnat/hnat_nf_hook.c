@@ -37,6 +37,7 @@ extern atomic_t eth1_in_br;
 struct net_device *br_dev;
 struct net_device *eth1_dev;
 
+
 #define do_ge2ext_fast(dev, skb)                                               \
 	((IS_LAN(dev) || IS_WAN(dev) || IS_PPD(dev)) && \
 	 skb_hnat_is_hashed(skb) && \
@@ -336,67 +337,12 @@ static void gmac_ppe_fwd_enable(struct net_device *dev)
 		set_gmac_ppe_fwd(1, 1);
 }
 
-int nf_hnat_netdevice_event(struct notifier_block *unused, unsigned long event,
-			    void *ptr)
+void ppd_dev_setting(void)
 {
-	struct net_device *dev;
-
-	dev = netdev_notifier_info_to_dev(ptr);
-	
-	switch (event) {
-	case NETDEV_UP:
-		if (!hnat_priv->guest_en) {
-			if (!strcmp(dev->name, "ra1") || !strcmp(dev->name, "rax1"))
-				break;
-		}
-
-		gmac_ppe_fwd_enable(dev);
-
-		extif_set_dev(dev, 1);
-
-		break;
-	case NETDEV_GOING_DOWN:
-		if (!get_wifi_hook_if_index_from_dev(dev))
-			extif_put_dev(dev);
-
-		foe_clear_all_bind_entries(dev);
-
-		break;
-	case NETDEV_CHANGE:
-		/* Clear PPE entries if the slave of bond device physical link down */
-		if (!netif_is_bond_slave(dev) ||
-		    (!IS_LAN(dev) && !IS_WAN(dev)))
-			break;
-		if (netif_carrier_ok(dev))
-			break;
-		foe_clear_ethdev_bind_entries(dev);
-		break;
-	case NETDEV_UNREGISTER:
-		if (hnat_priv->g_ppdev == dev) {
-			hnat_priv->g_ppdev = NULL;
-			dev_put(dev);
-		}
-		if (hnat_priv->g_wandev == dev) {
-			hnat_priv->g_wandev = NULL;
-			dev_put(dev);
-		}
-
-		break;
-	case NETDEV_REGISTER:
-		if (IS_WAN(dev) && !hnat_priv->g_wandev)
-			hnat_priv->g_wandev = dev_get_by_name(&init_net, hnat_priv->wan);
-
-		break;
-	case MTK_FE_RESET_NAT_DONE:
-		pr_info("[%s] HNAT driver starts to do warm init !\n", __func__);
-		hnat_warm_init();
-		break;
-	default:
-		br_dev = dev_get_by_name(&init_net, "br-lan");
-        	eth1_dev = dev_get_by_name(&init_net, "eth1");
-
-        	atomic_set(&eth1_in_br, 0);
-                if (br_dev && eth1_dev) {
+	br_dev = __dev_get_by_name(&init_net, "br-lan");
+        eth1_dev = __dev_get_by_name(&init_net, "eth1");
+        atomic_set(&eth1_in_br, 0);
+       		if (br_dev && eth1_dev) {
                         struct net_device *dev;
                         struct list_head *pos;
                         netdev_for_each_lower_dev(br_dev, dev, pos) {
@@ -406,17 +352,77 @@ int nf_hnat_netdevice_event(struct notifier_block *unused, unsigned long event,
                                 }
                         }
                 }
-        	if (1)
-                {
-                        if (atomic_read(&eth1_in_br))
-                        {printk ("eth1 in br-lan");
-                        hnat_priv->g_ppdev = dev_get_by_name(&init_net, "eth1");                        }
-                        else
-                        {printk ("eth0 in br-lan");
-                        hnat_priv->g_ppdev = dev_get_by_name(&init_net, "eth0");
-                        }
-                }
 
+		if (atomic_read(&eth1_in_br)){
+                        printk("eth1 in br-lan");
+                        hnat_priv->g_ppdev = __dev_get_by_name(&init_net, "eth1");
+		}
+                else {
+                    printk("eth0 in br-lan");
+                    hnat_priv->g_ppdev = __dev_get_by_name(&init_net, "eth0");
+                }
+}
+
+int nf_hnat_netdevice_event(struct notifier_block *unused, unsigned long event,
+			    void *ptr)
+{
+	struct net_device *dev;
+
+	dev = netdev_notifier_info_to_dev(ptr);
+	
+	switch (event) {
+	 case NETDEV_UP:
+		ppd_dev_setting();
+                if (!hnat_priv->guest_en) {
+                        if (!strcmp(dev->name, "ra1") || !strcmp(dev->name, "rax1"))
+                                break;
+                }
+		gmac_ppe_fwd_enable(dev);
+
+		extif_set_dev(dev, 1);
+
+		break;
+	case NETDEV_GOING_DOWN:
+		ppd_dev_setting();
+		if (!get_wifi_hook_if_index_from_dev(dev))
+			extif_put_dev(dev);
+
+		foe_clear_all_bind_entries(dev);
+
+		break;
+	case NETDEV_CHANGE:
+		ppd_dev_setting();
+		/* Clear PPE entries if the slave of bond device physical link down */
+		if (!netif_is_bond_slave(dev) ||
+		    (!IS_LAN(dev) && !IS_WAN(dev)))
+			break;
+		if (netif_carrier_ok(dev))
+			break;
+		foe_clear_ethdev_bind_entries(dev);
+		break;
+	case NETDEV_UNREGISTER:
+		ppd_dev_setting();
+		if (hnat_priv->g_ppdev == dev) {
+			hnat_priv->g_ppdev = NULL;
+		}
+		if (hnat_priv->g_wandev == dev) {
+			hnat_priv->g_wandev = NULL;
+			dev_put(dev);
+		}
+
+		break;
+	case NETDEV_REGISTER:
+		ppd_dev_setting();
+		if (IS_WAN(dev) && !hnat_priv->g_wandev)
+			hnat_priv->g_wandev = dev_get_by_name(&init_net, hnat_priv->wan);
+
+		break;
+	case MTK_FE_RESET_NAT_DONE:
+		pr_info("[%s] HNAT driver starts to do warm init !\n", __func__);
+		hnat_warm_init();
+		break;
+	default:
+		ppd_dev_setting();
 		break;
 	}
 
@@ -627,7 +633,6 @@ unsigned int do_hnat_ge_to_ext(struct sk_buff *skb, const char *func)
 	struct foe_entry *entry;
 	struct net_device *dev;
 
- 	 
 	entry = &hnat_priv->foe_table_cpu[skb_hnat_ppe(skb)][skb_hnat_entry(skb)];
 
 	if (IS_IPV4_GRP(entry))
@@ -643,7 +648,6 @@ unsigned int do_hnat_ge_to_ext(struct sk_buff *skb, const char *func)
 	}
 
 	skb->dev = dev;
-
 	if (IS_HQOS_MODE && eth_hdr(skb)->h_proto == HQOS_MAGIC_TAG) {
 		skb = skb_unshare(skb, GFP_ATOMIC);
 		if (!skb)
@@ -727,12 +731,12 @@ static inline void hnat_set_iif(const struct nf_hook_state *state,
 {
 	if (IS_WHNAT(state->in) && FROM_WED(skb)) {
 		return;
-	} else if (IS_EXT(state->in)) {
-                skb_hnat_iface(skb) = FOE_MAGIC_EXT;
 	} else if (IS_LAN(state->in)) {
 		skb_hnat_iface(skb) = FOE_MAGIC_GE_LAN;
 	} else if (IS_PPD(state->in)) {
 		skb_hnat_iface(skb) = FOE_MAGIC_GE_PPD;
+	} else if (IS_EXT(state->in)) {
+		skb_hnat_iface(skb) = FOE_MAGIC_EXT;
 	} else if (IS_WAN(state->in)) {
 		skb_hnat_iface(skb) = FOE_MAGIC_GE_WAN;
 	} else if (!IS_BR(state->in)) {
@@ -819,7 +823,7 @@ unsigned int do_hnat_mape_w2l_fast(struct sk_buff *skb, const struct net_device 
 		__vlan_hwaccel_put_tag(skb, htons(ETH_P_8021Q), VLAN_CFI_MASK | (in->ifindex & VLAN_VID_MASK));
 
 		if (!hnat_priv->g_ppdev)
-			hnat_priv->g_ppdev = dev_get_by_name(&init_net, hnat_priv->ppd);
+			hnat_priv->g_ppdev = __dev_get_by_name(&init_net, hnat_priv->ppd);
 
 		skb->dev = hnat_priv->g_ppdev;
 		skb->protocol = htons(ETH_P_IP);
@@ -1036,8 +1040,8 @@ mtk_hnat_ipv6_nf_pre_routing(void *priv, struct sk_buff *skb,
 		goto drop;
 
 	if (!IS_WHNAT(state->in) && IS_EXT(state->in) && IS_SPACE_AVAILABLE_HEAD(skb)) {
-		skb_hnat_alg(skb) = 0;
-		skb_hnat_magic_tag(skb) = HNAT_MAGIC_TAG;
+		hnat_set_head_frags(state, skb, 0, hnat_set_alg);
+ 		hnat_set_head_frags(state, skb, HNAT_MAGIC_TAG, hnat_set_tag);
 	}
 
 	if (!is_magic_tag_valid(skb))
@@ -1111,8 +1115,8 @@ mtk_hnat_ipv4_nf_pre_routing(void *priv, struct sk_buff *skb,
 		
 
 	if (!IS_WHNAT(state->in) && IS_EXT(state->in) && IS_SPACE_AVAILABLE_HEAD(skb)) {
-		skb_hnat_alg(skb) = 0;
-		skb_hnat_magic_tag(skb) = HNAT_MAGIC_TAG;
+		hnat_set_head_frags(state, skb, 0, hnat_set_alg);
+ 		hnat_set_head_frags(state, skb, HNAT_MAGIC_TAG, hnat_set_tag);
 	}
 
 	if (!is_magic_tag_valid(skb))
@@ -1174,8 +1178,8 @@ mtk_hnat_br_nf_local_in(void *priv, struct sk_buff *skb,
 		goto drop;
 	
 	if (!IS_WHNAT(state->in) && IS_EXT(state->in) && IS_SPACE_AVAILABLE_HEAD(skb)) {
-		skb_hnat_alg(skb) = 0;
-		skb_hnat_magic_tag(skb) = HNAT_MAGIC_TAG;
+		hnat_set_head_frags(state, skb, 0, hnat_set_alg);
+ 		hnat_set_head_frags(state, skb, HNAT_MAGIC_TAG, hnat_set_tag);
 	}
 
 	if (!is_magic_tag_valid(skb))
@@ -1211,7 +1215,7 @@ mtk_hnat_br_nf_local_in(void *priv, struct sk_buff *skb,
 	    !is_multicast_ether_addr(eth_hdr(skb)->h_dest)) {
  		
 		if (!hnat_priv->g_ppdev)
-			hnat_priv->g_ppdev = dev_get_by_name(&init_net, hnat_priv->ppd);
+			hnat_priv->g_ppdev = __dev_get_by_name(&init_net, hnat_priv->ppd);
 
 		if (!do_hnat_ext_to_ge(skb, state->in, __func__))
 			return NF_STOLEN;
@@ -1843,8 +1847,8 @@ static unsigned int skb_to_hnat_info(struct sk_buff *skb,
 				entry.ipv4_hnapt.vlan1 = 2;
 		}
 
-		trace_printk("learn of lan or wan(iif=%x) --> %s(ext)\n",
-			     skb_hnat_iface(skb), dev->name);
+		trace_printk("learn of lan or wan(iif=%x) --> %s(ext),dev->ifindex%x\n",
+			     skb_hnat_iface(skb), dev->name,dev->ifindex);
 		/* To CPU then stolen by pre-routing hant hook of LAN/WAN
 		 * Current setting is PDMA RX.
 		 */
@@ -2345,10 +2349,6 @@ static unsigned int mtk_hnat_nf_post_routing(
 	
 	if (!IS_LAN(out) && !IS_WAN(out) && !IS_EXT(out))
 		return 0;
-
-	if (!IS_WHNAT(out) && IS_EXT(out))
-               return 0;
-
  
 	trace_printk("[%s] case hit, %x-->%s, reason=%x\n", __func__,
 		     skb_hnat_iface(skb), out->name, skb_hnat_reason(skb));
