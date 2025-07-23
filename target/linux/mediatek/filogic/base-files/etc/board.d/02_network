@@ -247,8 +247,15 @@ mediatek_setup_macs()
 		label_mac=$(mtd_get_mac_binary "Factory" 0x4)
 		;;
 	openfi,6c*)
-		lan_mac=$(macaddr_add $(cat /sys/class/net/eth1/address) 1)
-		;;
+                local wifi_mac="$(mtd_get_mac_binary Factory 0x04)"
+                lan_mac="$(macaddr_add $wifi_mac 2)"
+                sed -i '/MacAddress=$wifi_mac/d' /etc/wireless/mediatek/mt7981.dbdc.b0.dat
+                echo "MacAddress=$wifi_mac" >> /etc/wireless/mediatek/mt7981.dbdc.b0.dat
+                wifi_mac="$(macaddr_add $wifi_mac 1)"
+                sed -i '/MacAddress=$wifi_mac/d' /etc/wireless/mediatek/mt7981.dbdc.b1.dat
+                echo "MacAddress=$wifi_mac" >> /etc/wireless/mediatek/mt7981.dbdc.b1.dat
+                label_mac=$lan_mac
+                ;;
 	wirelesstag,zx7981pd|\
 	wirelesstag,zx7981pd-ubootmod)
 		label_mac=$(mtd_get_mac_binary wtinfo 10)
@@ -257,12 +264,13 @@ mediatek_setup_macs()
 		;;
 	esac
 		
-	wifi_mac=$(macaddr_add $(cat /sys/class/net/eth0/address) 3)
-        sed -i '/MacAddress=$wifi_mac/d' /etc/wireless/mediatek/mt7981.dbdc.b0.dat
-        echo "MacAddress=$wifi_mac" >> /etc/wireless/mediatek/mt7981.dbdc.b0.dat
-        wifi_mac=$(macaddr_add $(cat /sys/class/net/eth0/address) 4)
-        sed -i '/MacAddress=$wifi_mac/d' /etc/wireless/mediatek/mt7981.dbdc.b1.dat
-        echo "MacAddress=$wifi_mac" >> /etc/wireless/mediatek/mt7981.dbdc.b1.dat
+#        wifi_mac=$(macaddr_add $(cat /sys/class/net/eth0/address) 3)
+#        sed -i '/MacAddress=$wifi_mac/d' /etc/wireless/mediatek/mt7981.dbdc.b0.dat
+#        echo "MacAddress=$wifi_mac" >> /etc/wireless/mediatek/mt7981.dbdc.b0.dat
+#        wifi_mac=$(macaddr_add $(cat /sys/class/net/eth0/address) 4)
+#        sed -i '/MacAddress=$wifi_mac/d' /etc/wireless/mediatek/mt7981.dbdc.b1.dat
+#        echo "MacAddress=$wifi_mac" >> /etc/wireless/mediatek/mt7981.dbdc.b1.dat
+
 	sed -i '/MacAddress=$wifi_mac/d' /etc/wireless/mediatek/mt7986-ax60000.dbdc.b0.dat
         echo "MacAddress=$wifi_mac" >> /etc/wireless/mediatek/mt7986-ax6000.dbdc.b0.dat
 	wifi_mac="$(macaddr_add $wifi_mac 1)"

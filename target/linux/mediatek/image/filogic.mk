@@ -1015,13 +1015,27 @@ define Device/openfi_6c
   DEVICE_DTS := mt7981b-openfi-6c
   DEVICE_DTS_DIR := ../dts
   SUPPORTED_DEVICES += openfi,6c
-  DEVICE_PACKAGES := automount  kmod-hwmon-pwmfan kmod-usb-net-rndis kmod-usb-serial-option f2fsck losetup mkf2fs kmod-fs-f2fs kmod-mmc luci-app-openfi 
+  DEVICE_PACKAGES := automount  kmod-hwmon-pwmfan kmod-usb-net-rndis kmod-usb-serial-option f2fsck losetup mkf2fs kmod-fs-f2fs kmod-mmc luci-app-openfi
   KERNEL := kernel-bin | lzma | fit lzma $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb
   KERNEL_INITRAMFS := kernel-bin | lzma | \
         fit lzma $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb with-initrd | pad-to 64k
   IMAGE/sysupgrade.bin := sysupgrade-tar | append-metadata
 endef
 TARGET_DEVICES += openfi_6c
+
+define Device/openfi_6c1
+  DEVICE_VENDOR := OpenFi
+  DEVICE_MODEL := 6C1 (with 256MB+1GB+M.2 for 5G+U3)
+  DEVICE_DTS := mt7981b-openfi-6c1
+  DEVICE_DTS_DIR := ../dts
+  SUPPORTED_DEVICES += openfi,6c1
+  DEVICE_PACKAGES := automount  kmod-hwmon-pwmfan kmod-usb-net-rndis kmod-usb-serial-option f2fsck losetup mkf2fs kmod-fs-f2fs kmod-mmc luci-app-openfi
+  KERNEL := kernel-bin | lzma | fit lzma $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb
+  KERNEL_INITRAMFS := kernel-bin | lzma | \
+        fit lzma $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb with-initrd | pad-to 64k
+  IMAGE/sysupgrade.bin := sysupgrade-tar | append-metadata
+endef
+TARGET_DEVICES += openfi_6c1
 
 define Device/h3c_magic-nx30-pro
   DEVICE_VENDOR := H3C
@@ -2215,3 +2229,4 @@ ifneq ($(CONFIG_TARGET_ROOTFS_INITRAMFS),)
 endif
 endef
 TARGET_DEVICES += wirelesstag_zx7981pd-ubootmod
+

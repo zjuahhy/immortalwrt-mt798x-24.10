@@ -7,8 +7,8 @@
 #include "mt7981.dtsi"
 
 / {
-	model = "OpenFi 6C";
-	compatible = "openfi,6c", "mediatek,mt7981-spim-snand-rfb";
+	model = "OpenFi 6C1";
+	compatible = "openfi,6c1", "mediatek,mt7981-spim-snand-rfb";
 
 	aliases {
 		label-mac-device = &gmac1;
@@ -55,17 +55,10 @@
 		};
 
 		led_2 {
-			label = "wifi";
+		    label = "wifi";
 			color = <LED_COLOR_ID_GREEN>;
 			gpios = <&pio 35 GPIO_ACTIVE_LOW>;
 			default-state = "on";
-		};
-
-		led_3 {
-			label = "modem";
-			color = <LED_COLOR_ID_GREEN>;
-			gpios = <&pio 11 GPIO_ACTIVE_LOW>;
-			default-state = "off";
 		};
 	};
 
