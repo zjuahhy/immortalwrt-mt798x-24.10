@@ -11,7 +11,7 @@ Default login address: http://192.168.6.1 or http://immortalwrt.lan, username: _
 ## How to Build OpenFi 6C Series 
 OpenFi 6C Travel 5G CPE : Flash 256M, DDR4-1GB, with M.2/TF Slot/USB 3.0/Giga-LAN
 
-先选择分支 openfi6c_new
+先选择分支 openwrt-24.10-6.6
 然后复制配置
 - 第一版硬件配置:
    ```bash
@@ -78,7 +78,7 @@ To build your own firmware you need a GNU/Linux, BSD or macOS system (case sensi
 
   if you only want OpenFi 6C or 6C1
 
-  1. Run `git clone -b openfi6c --single-branch --filter=blob:none https://github.com/OpenWrt01/immortalwrt-mt798x-24.10.git openfi6c_imm24` to clone the source code.
+  1. Run `git clone -b openwrt-24.10-6.6 --single-branch --filter=blob:none https://github.com/OpenWrt01/immortalwrt-mt798x-24.10.git openfi6c_imm24` to clone the source code.
   2. Run `cd openfi6c_imm24` to enter source directory.
   3. Run `./scripts/feeds update -a` to obtain all the latest package definitions defined in feeds.conf / feeds.conf.default
   4. Run `./scripts/feeds install -a` to install symlinks for all obtained packages into package/feeds/
