@@ -21,6 +21,10 @@ OpenFi 6C Travel 5G CPE : Flash 256M, DDR4-1GB, with M.2/TF Slot/USB 3.0/Giga-LA
    ```bash
        cp defconfig/mt7981-ax3000-openfi6c.config .config
    ```
+
+- 配置中默认选择了qmodem，更新feeds时，需要在安装时，运行./scripts/feeds install -a -f -p qmodem，防止安装不成功，造成编译问题。
+- 如果需要使用istore的feeds，需要运行./scripts/feeds install -d y -p istore luci-app-store，之后根据需要运行make menuconfig添加选项。
+
 - Run `make V=s`
 
 
