@@ -75,10 +75,10 @@ mediatek_setup_interfaces()
 	glinet,x3000-emmc |\
 	*xe3000* |\
 	cudy,tr3000-v1 |\
-	*mt2500* |\
-	openfi,6c*)
+	*mt2500*)
 		ucidef_set_interfaces_lan_wan eth1 "eth0"
 		;;
+	openfi,6c* |\
 	huasifei,wh3000-emmc)
 		ucidef_set_interfaces_lan_wan eth0 eth1
 		;;
@@ -410,6 +410,7 @@ mediatek_setup_macs()
 	openfi,6c*)
 		local wifi_mac="$(mtd_get_mac_binary Factory 0x04)"
 		lan_mac="$(macaddr_add $wifi_mac 2)"
+		wan_mac="$(macaddr_add $wifi_mac 3)"
 		sed -i '/MacAddress=$wifi_mac/d' /etc/wireless/mediatek/mt7981.dbdc.b0.dat
 		echo "MacAddress=$wifi_mac" >> /etc/wireless/mediatek/mt7981.dbdc.b0.dat
 		wifi_mac="$(macaddr_add $wifi_mac 1)"
