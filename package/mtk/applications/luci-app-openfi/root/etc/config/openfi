@@ -10,11 +10,9 @@ config fan 'fan'
 
 config switch 'switch'
 	option func '0'
-	option lan "1"
+	option lan "0"
 	option power "1"
 	option led "1"
 
 config modem 'reset'
 	option state '1'
-
-
