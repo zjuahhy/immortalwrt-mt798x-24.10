@@ -82,7 +82,6 @@ mediatek_setup_interfaces()
 		;;
 	bananapi,bpi-r3-mini|\
 	edgecore,eap111|\
-	openfi,6c*|\
 	huasifei,wh3000-emmc)
 		ucidef_set_interfaces_lan_wan eth0 eth1
 		;;
@@ -111,7 +110,8 @@ mediatek_setup_interfaces()
 	glinet,gl-x3000|\
 	glinet,gl-xe3000|\
 	openembed,som7981|\
-	openwrt,one)
+	openwrt,one|\
+	openfi,6c*)
 		ucidef_set_interfaces_lan_wan "eth1" eth0
 		;;
 	dlink,aquila-pro-ai-m30-a1|\

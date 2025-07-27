@@ -10,7 +10,7 @@ config fan 'fan'
 
 config switch 'switch'
 	option func '0'
-	option lan "0"
+	option lan "1"
 	option power "1"
 	option led "1"
 
