@@ -344,14 +344,16 @@ define Device/glinet_gl-mt3000
   DEVICE_DTS := mt7981-gl-mt3000
   DEVICE_DTS_DIR := $(DTS_DIR)/mediatek
   SUPPORTED_DEVICES := glinet,mt3000-snand
-  DEVICE_PACKAGES := kmod-hwmon-pwmfan
+  DEVICE_PACKAGES := $(MT7981_USB_PKGS) kmod-hwmon-pwmfan kmod-usb-net-rndis kmod-usb-serial-option f2fsck losetup mkf2fs kmod-fs-f2fs kmod-mmc \
+	luci-app-ksmbd luci-i18n-ksmbd-zh-cn ksmbd-utils
   UBINIZE_OPTS := -E 5
   BLOCKSIZE := 128k
   PAGESIZE := 2048
   IMAGE_SIZE := 65536k
   KERNEL_IN_UBI := 1
-  IMAGES := sysupgrade.tar
-  IMAGE/sysupgrade.tar := sysupgrade-tar | append-metadata
+  IMAGES += factory.bin
+  IMAGE/factory.bin := append-ubi | check-size $$$$(IMAGE_SIZE)
+  IMAGE/sysupgrade.bin := sysupgrade-tar | append-metadata
 endef
 TARGET_DEVICES += glinet_gl-mt3000
 
