@@ -4,14 +4,14 @@
 #include "mt7981.dtsi"
 
 / {
-	model = "GL.iNet GL-MT3000";
+	model = "COMFAST WR632AX";
 	compatible = "glinet,mt3000-snand", "mediatek,mt7981";
 
 	aliases {
-		led-boot = &led_system_blue;
-		led-failsafe = &led_system_blue;
-		led-running = &led_system_blue;
-		led-upgrade = &led_system_white;
+		led-boot = &wifi_blue;
+		led-failsafe = &wifi_blue;
+		led-running = &wifi_blue;
+		led-upgrade = &lan_green;
 	};
 
 	chosen {
@@ -28,10 +28,9 @@
 			gpios = <&pio 1 GPIO_ACTIVE_LOW>;
 		};
 
-		switch {
-			label = "switch";
-			linux,code = <BTN_0>;
-			linux,input-type = <EV_SW>;
+		wps {
+			label = "wps";
+			linux,code = <KEY_WPS_BUTTON>;
 			gpios = <&pio 0 GPIO_ACTIVE_LOW>;
 		};
 	};
@@ -39,14 +38,19 @@
 	leds {
 		compatible = "gpio-leds";
 
-		led_system_blue: system_blue {
-			label = "blue:system";
-			gpios = <&pio 31 GPIO_ACTIVE_LOW>;
+		wifi_blue: wifi_blue {
+			label = "comfast:blue:led";
+			gpios = <&pio 8 GPIO_ACTIVE_LOW>;
 		};
 
-		led_system_white: system_white {
-			label = "white:system";
-			gpios = <&pio 30 GPIO_ACTIVE_LOW>;
+		lan_green: lan_green {
+			label = "comfast:green:led";
+			gpios = <&pio 35 GPIO_ACTIVE_LOW>;
+		};
+
+		wan_red: wan_red {
+			label = "comfast:red:led";
+			gpios = <&pio 34 GPIO_ACTIVE_LOW>;
 		};
 	};
 
@@ -88,13 +92,8 @@
 			};
 
 			partition@580000 {
-				label = "log";
-				reg = <0x0580000 0x0040000>;
-			};
-
-			partition@5c0000 {
 				label = "ubi";
-				reg = <0x05c0000 0xf640000>;
+				reg = <0x0580000 0x4000000>;
 			};
 		};
 	};
