@@ -97,70 +97,15 @@
 			};
 		};
 	};
-/*	
+
 	fan: pwm-fan {
 		compatible = "pwm-fan";
-		cooling-min-state = <0>;
-		cooling-max-state = <3>;
 		#cooling-cells = <2>;
-		pwms = <&pwm 0 40000 0>;
-		pinctrl-0 = <&fan_pins>;
-		pinctrl-names = "default";
-		cooling-levels = <64 128 192 255>;
-	};
-*/
-};
-/*
-&cpu_thermal {
-	trips {
-		cpu_trip_critical: critical {
-			temperature = <100000>;
-			hysteresis = <2000>;
-			type = "critical";
-		};
-
-		cpu_trip_hot: hot {
-			temperature = <55000>;
-			hysteresis = <2000>;
-			type = "hot";
-		};
-
-		cpu_trip_active: active {
-			temperature = <40000>;
-			hysteresis = <2000>;
-			type = "active";
-		};
-
-		cpu_trip_passive: passive {
-			temperature = <30000>;
-			hysteresis = <2000>;
-			type = "passive";
-		};
-	};
-
-	cooling-maps {
-		cpu-active-high {
-			cooling-device = <&fan 3 3>;
-			trip = <&cpu_trip_critical>;
-		};
-
-		cpu-active-low {
-			cooling-device = <&fan 2 2>;
-			trip = <&cpu_trip_hot>;
-		};
-
-		cpu-active {
-			cooling-device = <&fan 1 1>;
-			trip = <&cpu_trip_active>;
-		};
-
-		cpu-passive {
-			cooling-device = <&fan 0 0>;
-			trip = <&cpu_trip_passive>;
-		};
+		cooling-levels = <0 10 20 30 40 50 60 70 80 90 100 110 120 130 140 150 160 170 180 190 200 210 220 240 255>;
+		pwms = <&pwm 2 40000 0>;
+		status = "okay";
 	};
 };
-*/
 
 &eth {
 	status = "okay";
@@ -233,23 +178,11 @@
 };
 
 &pio {
-	pwm0_pin: pwm0-pin-g0 {
+
+	pwm2_pin: pwm2-pin {
 		mux {
 			function = "pwm";
-			groups = "pwm0_1";
-		};
-	};
-
-	fan_pins: fan-pins {
-		mux {
-			function = "wa_aice";
-			groups = "wa_aice3";
-		};
-
-		power {
-			pins = "SPI2_MISO";
-			drive-strength = <MTK_DRIVE_8mA>;
-			mediatek,pull-up-adv = <1>;
+			groups = "pwm2";
 		};
 	};
 
@@ -288,7 +221,7 @@
 
 &pwm {
 	pinctrl-names = "default";
-	pinctrl-0 = <&pwm0_pin>;
+	pinctrl-0 = <&pwm2_pin>;
 	status = "okay";
 };
 
