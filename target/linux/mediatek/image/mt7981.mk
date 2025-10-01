@@ -344,8 +344,7 @@ define Device/glinet_gl-mt3000
   DEVICE_DTS := mt7981-gl-mt3000
   DEVICE_DTS_DIR := $(DTS_DIR)/mediatek
   SUPPORTED_DEVICES := glinet,mt3000-snand
-  DEVICE_PACKAGES := $(MT7981_USB_PKGS) kmod-hwmon-pwmfan kmod-usb-net-rndis kmod-usb-serial-option f2fsck losetup mkf2fs kmod-fs-f2fs kmod-mmc \
-	luci-app-ksmbd luci-i18n-ksmbd-zh-cn ksmbd-utils
+  DEVICE_PACKAGES := $(MT7981_USB_PKGS) kmod-hwmon-pwmfan kmod-usb-net-rndis kmod-usb-serial-option f2fsck losetup mkf2fs kmod-fs-f2fs kmod-mmc luci-app-fancontrol
   UBINIZE_OPTS := -E 5
   BLOCKSIZE := 128k
   PAGESIZE := 2048
