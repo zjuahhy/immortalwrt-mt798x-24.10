@@ -239,13 +239,6 @@
 		};
 	};
 
-		power {
-			pins = "SPI2_MISO";
-			drive-strength = <MTK_DRIVE_8mA>;
-			mediatek,pull-up-adv = <1>;
-		};
-	};
-
 	spi0_flash_pins: spi0-pins {
 		mux {
 			function = "spi";
