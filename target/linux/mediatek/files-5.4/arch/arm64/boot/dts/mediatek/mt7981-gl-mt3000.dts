@@ -104,6 +104,7 @@
 		cooling-max-state = <3>;
 		#cooling-cells = <2>;
 		pwms = <&pwm 0 40000 0>;
+		pinctrl-0 = <&fan_pins>;
 		pinctrl-names = "default";
 		cooling-levels = <64 128 192 255>;
 	};
@@ -236,6 +237,32 @@
 		mux {
 			function = "pwm";
 			groups = "pwm0_1";
+		};
+	};
+
+	fan_pins: fan-pins {
+		mux {
+			function = "wa_aice";
+			groups = "wa_aice3";
+		};
+
+		power {
+			pins = "SPI2_MISO";
+			drive-strength = <MTK_DRIVE_8mA>;
+			mediatek,pull-up-adv = <1>;
+		};
+	};
+
+	usb_pwr_pins: usb-pins {
+		mux {
+			function = "jtag";
+			groups = "wo0_jtag_0";
+		};
+
+		power {
+			pins = "WO_JTAG_JTCLK";
+			drive-strength = <MTK_DRIVE_8mA>;
+			mediatek,pull-up-adv = <1>;
 		};
 	};
 
