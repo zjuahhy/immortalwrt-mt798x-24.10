@@ -4,7 +4,7 @@
 #include "mt7981.dtsi"
 
 / {
-	model = "COMFAST WR632AX";
+	model = "COMFAST CF-WR632AX";
 	compatible = "glinet,mt3000-snand", "mediatek,mt7981";
 
 	aliases {
@@ -97,19 +97,19 @@
 			};
 		};
 	};
-
+/*	
 	fan: pwm-fan {
 		compatible = "pwm-fan";
 		cooling-min-state = <0>;
 		cooling-max-state = <3>;
 		#cooling-cells = <2>;
 		pwms = <&pwm 0 40000 0>;
-		pinctrl-0 = <&fan_pins>;
 		pinctrl-names = "default";
 		cooling-levels = <64 128 192 255>;
 	};
+*/
 };
-
+/*
 &cpu_thermal {
 	trips {
 		cpu_trip_critical: critical {
@@ -159,6 +159,7 @@
 		};
 	};
 };
+*/
 
 &eth {
 	status = "okay";
@@ -238,27 +239,8 @@
 		};
 	};
 
-	fan_pins: fan-pins {
-		mux {
-			function = "wa_aice";
-			groups = "wa_aice3";
-		};
-
 		power {
 			pins = "SPI2_MISO";
-			drive-strength = <MTK_DRIVE_8mA>;
-			mediatek,pull-up-adv = <1>;
-		};
-	};
-
-	usb_pwr_pins: usb-pins {
-		mux {
-			function = "jtag";
-			groups = "wo0_jtag_0";
-		};
-
-		power {
-			pins = "WO_JTAG_JTCLK";
 			drive-strength = <MTK_DRIVE_8mA>;
 			mediatek,pull-up-adv = <1>;
 		};
