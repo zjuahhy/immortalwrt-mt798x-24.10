@@ -45,7 +45,7 @@ case "$board" in
         sed -i "s/OpenFi6C_2G/OpenFi6C_${mac_suffix}/g" \
             /etc/config/wireless 2>/dev/null
 
-        sed -i "s/ImmortalWrt-5G/OpenFi6C_5G_${mac_suffix}/g" \
+        sed -i "s/OpenFi6C_5G/OpenFi6C_5G_${mac_suffix}/g" \
             /etc/config/wireless 2>/dev/null
 
         echo "SSID updated successfully."
